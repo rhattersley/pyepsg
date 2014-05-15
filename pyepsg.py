@@ -14,6 +14,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with pyepsg.  If not, see <http://www.gnu.org/licenses/>.
+"""
+Provides simple access to http://epsg.io/.
+
+The entry point for this package is the :func:`get()` function.
+
+"""
 
 import xml.etree.ElementTree as ET
 
@@ -24,10 +30,23 @@ EPSG_IO_URL = 'http://epsg.io/'
 
 
 class ProjectedCRS(object):
+    """
+    Represents a single projected CRS.
+
+    """
     def __init__(self, element):
         self.element = element
 
     def as_proj4(self):
+        """
+        Return the PROJ.4 string which corresponds to the projection.
+
+        For example::
+
+            >>> get(21781).as_proj4()
+            +proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel +towgs84=674.4,15.1,405.3,0,0,0,0 +units=m +no_defs
+
+        """
         id = self.element.attrib['{http://www.opengis.net/gml/3.2}id']
         code = id.split('-')[-1]
         url = '{prefix}{code}.proj4?download'.format(prefix=EPSG_IO_URL,
@@ -35,6 +54,17 @@ class ProjectedCRS(object):
         return requests.get(url).text
 
     def domain(self):
+        """
+        Return the domain of validity for this projection as:
+        (west, east, south, north).
+
+        For example::
+
+            >>> get(21781).domain()
+            [5.97, 10.49, 45.83, 47.81]
+
+
+        """
         # TODO: Check for gmd:EX_GeographicBoundingBox and blow up otherwise.
         # TODO: Generalise interface to return a polygon? (Can we find
         # something that uses a polygon instead?)
@@ -61,6 +91,17 @@ class ProjectedCRS(object):
 
 
 def get(code):
+    """
+    Return an object that corresponds to the given EPSG code.
+
+    Currently supported object types are:
+        - :class:`ProjectedCRS`
+
+    For example::
+
+        projection = get(27700)
+
+    """
     url = '{prefix}{code}.gml?download'.format(prefix=EPSG_IO_URL, code=code)
     xml = requests.get(url).text
     root = ET.fromstring(xml)
