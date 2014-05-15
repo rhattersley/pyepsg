@@ -21,7 +21,12 @@ setup(
     name='pyepsg',
     version='0.1.0',
     url='https://github.com/rhattersley/pyepsg',
-    author='Met Office',
+    author='Richard Hattersley',
+    author_email='rhattersley@gmail.com',
+    classifiers=['License :: OSI Approved :: '
+                 'GNU Lesser General Public License v3 (LGPLv3)',
+                 'Topic :: Scientific/Engineering :: GIS'],
+    description='Easy access to the EPSG database via http://epsg.io/',
 
     py_modules=['pyepsg'],
 )
