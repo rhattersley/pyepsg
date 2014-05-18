@@ -37,6 +37,40 @@ class ProjectedCRS(object):
     def __init__(self, element):
         self.element = element
 
+    @property
+    def id(self):
+        id = self.element.attrib['{http://www.opengis.net/gml/3.2}id']
+        code = id.split('-')[-1]
+        return code
+
+    def as_esri_wkt(self):
+        """
+        Return the ESRI WKT string which corresponds to the projection.
+
+        For example::
+
+            >>> print get(27700).as_esri_wkt() + '...'
+        PROJCS["OSGB_1936_British_National_Grid",GEOGCS["GCS_OSGB 19...
+
+        """
+        url = '{prefix}{code}.esriwkt?download'.format(prefix=EPSG_IO_URL,
+                                                       code=self.id)
+        return requests.get(url).text
+
+    def as_html(self):
+        """
+        Return the OGC WKT which corresponds to the projection as HTML.
+
+        For example::
+
+            >>> print get(27700).as_html() + '...'
+        <div class="syntax"><pre><span class="gh">PROJCS</span><span...
+
+        """
+        url = '{prefix}{code}.html?download'.format(prefix=EPSG_IO_URL,
+                                                    code=self.id)
+        return requests.get(url).text
+
     def as_proj4(self):
         """
         Return the PROJ.4 string which corresponds to the projection.
@@ -44,13 +78,27 @@ class ProjectedCRS(object):
         For example::
 
             >>> get(21781).as_proj4()
-            +proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel +towgs84=674.4,15.1,405.3,0,0,0,0 +units=m +no_defs
+            +proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 \
++k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel \
++towgs84=674.4,15.1,405.3,0,0,0,0 +units=m +no_defs
 
         """
-        id = self.element.attrib['{http://www.opengis.net/gml/3.2}id']
-        code = id.split('-')[-1]
         url = '{prefix}{code}.proj4?download'.format(prefix=EPSG_IO_URL,
-                                                     code=code)
+                                                     code=self.id)
+        return requests.get(url).text
+
+    def as_wkt(self):
+        """
+        Return the OGC WKT string which corresponds to the projection.
+
+        For example::
+
+            >>> print get(27700).as_wkt() + '...'
+        PROJCS["OSGB 1936 / British National Grid",GEOGCS["OSGB 1936...
+
+        """
+        url = '{prefix}{code}.wkt?download'.format(prefix=EPSG_IO_URL,
+                                                   code=self.id)
         return requests.get(url).text
 
     def domain(self):
