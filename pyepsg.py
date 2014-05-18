@@ -266,12 +266,14 @@ def get(code):
     url = '{prefix}{code}.gml?download'.format(prefix=EPSG_IO_URL, code=code)
     xml = requests.get(url).text
     root = ET.fromstring(xml)
-    if root.tag == GML_NS + 'ProjectedCRS':
-        return ProjectedCRS(root)
-    elif root.tag == GML_NS + 'GeodeticCRS':
-        return GeodeticCRS(root)
-    elif root.tag == GML_NS + 'CartesianCS':
-        return CartesianCS(root)
-    elif root.tag == GML_NS + 'BaseUnit':
-        return UOM(root)
-    raise ValueError('Unsupported code type: {}'.format(root.tag))
+    class_for_tag = {
+        GML_NS + 'CartesianCS': CartesianCS,
+        GML_NS + 'GeodeticCRS': GeodeticCRS,
+        GML_NS + 'ProjectedCRS': ProjectedCRS,
+        GML_NS + 'BaseUnit': UOM,
+    }
+    if root.tag in class_for_tag:
+        instance = class_for_tag[root.tag](root)
+    else:
+        raise ValueError('Unsupported code type: {}'.format(root.tag))
+    return instance
