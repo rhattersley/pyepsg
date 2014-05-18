@@ -28,6 +28,8 @@ import requests
 
 EPSG_IO_URL = 'http://epsg.io/'
 
+GML_NS = '{http://www.opengis.net/gml/3.2}'
+
 
 class ProjectedCRS(object):
     """
@@ -39,9 +41,22 @@ class ProjectedCRS(object):
 
     @property
     def id(self):
-        id = self.element.attrib['{http://www.opengis.net/gml/3.2}id']
+        id = self.element.attrib[GML_NS + 'id']
+
         code = id.split('-')[-1]
         return code
+
+    @property
+    def identifier(self):
+        return self.element.find(GML_NS + 'identifier').text
+
+    @property
+    def name(self):
+        return self.element.find(GML_NS + 'name').text
+
+    @property
+    def scope(self):
+        return self.element.find(GML_NS + 'scope').text
 
     def as_esri_wkt(self):
         """
@@ -101,7 +116,7 @@ class ProjectedCRS(object):
                                                    code=self.id)
         return requests.get(url).text
 
-    def domain(self):
+    def domain_of_validity(self):
         """
         Return the domain of validity for this projection as:
         (west, east, south, north).
@@ -116,8 +131,7 @@ class ProjectedCRS(object):
         # TODO: Check for gmd:EX_GeographicBoundingBox and blow up otherwise.
         # TODO: Generalise interface to return a polygon? (Can we find
         # something that uses a polygon instead?)
-        domain = self.element.find(
-            '{http://www.opengis.net/gml/3.2}domainOfValidity')
+        domain = self.element.find(GML_NS + 'domainOfValidity')
         domain_href = domain.attrib['{http://www.w3.org/1999/xlink}href']
         url = '{prefix}{code}.gml?download'.format(prefix=EPSG_IO_URL,
                                                    code=domain_href)
@@ -153,6 +167,6 @@ def get(code):
     url = '{prefix}{code}.gml?download'.format(prefix=EPSG_IO_URL, code=code)
     xml = requests.get(url).text
     root = ET.fromstring(xml)
-    if root.tag == '{http://www.opengis.net/gml/3.2}ProjectedCRS':
+    if root.tag == GML_NS + 'ProjectedCRS':
         return ProjectedCRS(root)
     raise ValueError('Unsupported code type: {}'.format(root.tag))
