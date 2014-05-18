@@ -29,20 +29,16 @@ import requests
 EPSG_IO_URL = 'http://epsg.io/'
 
 GML_NS = '{http://www.opengis.net/gml/3.2}'
+XLINK_NS = '{http://www.w3.org/1999/xlink}'
 
 
-class ProjectedCRS(object):
-    """
-    Represents a single projected CRS.
-
-    """
+class CRS(object):
     def __init__(self, element):
         self.element = element
 
     @property
     def id(self):
         id = self.element.attrib[GML_NS + 'id']
-
         code = id.split('-')[-1]
         return code
 
@@ -60,7 +56,7 @@ class ProjectedCRS(object):
 
     def as_esri_wkt(self):
         """
-        Return the ESRI WKT string which corresponds to the projection.
+        Return the ESRI WKT string which corresponds to the CRS.
 
         For example::
 
@@ -74,7 +70,7 @@ class ProjectedCRS(object):
 
     def as_html(self):
         """
-        Return the OGC WKT which corresponds to the projection as HTML.
+        Return the OGC WKT which corresponds to the CRS as HTML.
 
         For example::
 
@@ -88,7 +84,7 @@ class ProjectedCRS(object):
 
     def as_proj4(self):
         """
-        Return the PROJ.4 string which corresponds to the projection.
+        Return the PROJ.4 string which corresponds to the CRS.
 
         For example::
 
@@ -104,7 +100,7 @@ class ProjectedCRS(object):
 
     def as_wkt(self):
         """
-        Return the OGC WKT string which corresponds to the projection.
+        Return the OGC WKT string which corresponds to the CRS.
 
         For example::
 
@@ -118,7 +114,7 @@ class ProjectedCRS(object):
 
     def domain_of_validity(self):
         """
-        Return the domain of validity for this projection as:
+        Return the domain of validity for this CRS as:
         (west, east, south, north).
 
         For example::
@@ -132,7 +128,7 @@ class ProjectedCRS(object):
         # TODO: Generalise interface to return a polygon? (Can we find
         # something that uses a polygon instead?)
         domain = self.element.find(GML_NS + 'domainOfValidity')
-        domain_href = domain.attrib['{http://www.w3.org/1999/xlink}href']
+        domain_href = domain.attrib[XLINK_NS + 'href']
         url = '{prefix}{code}.gml?download'.format(prefix=EPSG_IO_URL,
                                                    code=domain_href)
         xml = requests.get(url).text
@@ -152,11 +148,31 @@ class ProjectedCRS(object):
         return bounds
 
 
+class GeodeticCRS(CRS):
+    """
+    Represents a single geodetic CRS.
+
+    """
+
+
+class ProjectedCRS(CRS):
+    """
+    Represents a single projected CRS.
+
+    """
+    @property
+    def base_geodetic_crs(self):
+        base = self.element.find(GML_NS + 'baseGeodeticCRS')
+        href = base.attrib[XLINK_NS + 'href']
+	return get(href)
+
+
 def get(code):
     """
     Return an object that corresponds to the given EPSG code.
 
     Currently supported object types are:
+        - :class:`GeodeticCRS`
         - :class:`ProjectedCRS`
 
     For example::
@@ -169,4 +185,6 @@ def get(code):
     root = ET.fromstring(xml)
     if root.tag == GML_NS + 'ProjectedCRS':
         return ProjectedCRS(root)
+    elif root.tag == GML_NS + 'GeodeticCRS':
+        return GeodeticCRS(root)
     raise ValueError('Unsupported code type: {}'.format(root.tag))
