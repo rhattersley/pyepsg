@@ -20,6 +20,7 @@ Provides simple access to http://epsg.io/.
 The entry point for this package is the :func:`get()` function.
 
 """
+import weakref
 
 import xml.etree.ElementTree as ET
 
@@ -30,6 +31,9 @@ EPSG_IO_URL = 'http://epsg.io/'
 
 GML_NS = '{http://www.opengis.net/gml/3.2}'
 XLINK_NS = '{http://www.w3.org/1999/xlink}'
+
+
+_cache = weakref.WeakValueDictionary()
 
 
 class EPSG(object):
@@ -263,17 +267,22 @@ def get(code):
         <CartesianCS: Cartesian 2D CS. Axes: easting, northi..>
 
     """
-    url = '{prefix}{code}.gml?download'.format(prefix=EPSG_IO_URL, code=code)
-    xml = requests.get(url).text
-    root = ET.fromstring(xml)
-    class_for_tag = {
-        GML_NS + 'CartesianCS': CartesianCS,
-        GML_NS + 'GeodeticCRS': GeodeticCRS,
-        GML_NS + 'ProjectedCRS': ProjectedCRS,
-        GML_NS + 'BaseUnit': UOM,
-    }
-    if root.tag in class_for_tag:
-        instance = class_for_tag[root.tag](root)
-    else:
-        raise ValueError('Unsupported code type: {}'.format(root.tag))
+    instance = _cache.get(code)
+    if instance is None:
+        url = '{prefix}{code}.gml?download'.format(prefix=EPSG_IO_URL,
+                                                   code=code)
+        xml = requests.get(url).text
+        print 'request'
+        root = ET.fromstring(xml)
+        class_for_tag = {
+            GML_NS + 'CartesianCS': CartesianCS,
+            GML_NS + 'GeodeticCRS': GeodeticCRS,
+            GML_NS + 'ProjectedCRS': ProjectedCRS,
+            GML_NS + 'BaseUnit': UOM,
+        }
+        if root.tag in class_for_tag:
+            instance = class_for_tag[root.tag](root)
+        else:
+            raise ValueError('Unsupported code type: {}'.format(root.tag))
+        _cache[code] = instance
     return instance
