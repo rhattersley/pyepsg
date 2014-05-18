@@ -32,19 +32,64 @@ GML_NS = '{http://www.opengis.net/gml/3.2}'
 XLINK_NS = '{http://www.w3.org/1999/xlink}'
 
 
-class CRS(object):
+class EPSG(object):
     def __init__(self, element):
         self.element = element
 
+    @property
+    def identifier(self):
+        return self.element.find(GML_NS + 'identifier').text
+
+
+class UOM(EPSG):
+    @property
+    def name(self):
+        return self.element.find(GML_NS + 'name').text
+
+
+class Axis(EPSG):
+    @property
+    def direction(self):
+        return self.element.find(GML_NS + 'axisDirection').text
+
+    @property
+    def uom(self):
+        uom = self.element.attrib['uom']
+        return get(uom).name
+
+    def __repr__(self):
+        return '<Axis: {self.direction} / {self.uom}>'.format(self=self)
+
+
+class CartesianCS(EPSG):
+    @property
+    def axes(self):
+        axes = self.element.findall(GML_NS + 'axis')
+        return [Axis(axis.find(GML_NS + 'CoordinateSystemAxis')) for
+                axis in axes]
+
+    @property
+    def name(self):
+        return self.element.find(GML_NS + 'name').text
+
+    @property
+    def remarks(self):
+        return self.element.find(GML_NS + 'remarks').text
+
+    def __repr__(self):
+        name = self.name
+        if len(name) > 38:
+            name = name[:38] + '..'
+        return '<CartesianCS: {name}>'.format(name=name)
+
+
+
+class CRS(EPSG):
     @property
     def id(self):
         id = self.element.attrib[GML_NS + 'id']
         code = id.split('-')[-1]
         return code
-
-    @property
-    def identifier(self):
-        return self.element.find(GML_NS + 'identifier').text
 
     @property
     def name(self):
@@ -164,7 +209,13 @@ class ProjectedCRS(CRS):
     def base_geodetic_crs(self):
         base = self.element.find(GML_NS + 'baseGeodeticCRS')
         href = base.attrib[XLINK_NS + 'href']
-	return get(href)
+        return get(href)
+
+    @property
+    def cartesian_cs(self):
+        cs = self.element.find(GML_NS + 'cartesianCS')
+        href = cs.attrib[XLINK_NS + 'href']
+        return get(href)
 
 
 def get(code):
@@ -187,4 +238,8 @@ def get(code):
         return ProjectedCRS(root)
     elif root.tag == GML_NS + 'GeodeticCRS':
         return GeodeticCRS(root)
+    elif root.tag == GML_NS + 'CartesianCS':
+        return CartesianCS(root)
+    elif root.tag == GML_NS + 'BaseUnit':
+        return UOM(root)
     raise ValueError('Unsupported code type: {}'.format(root.tag))
