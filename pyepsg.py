@@ -230,10 +230,14 @@ def get(code):
     Currently supported object types are:
         - :class:`GeodeticCRS`
         - :class:`ProjectedCRS`
+        - :class:`CartesianCS`
+        - :class:`BaseUnit`
 
     For example::
 
-        projection = get(27700)
+        >>> projection = get(27700)
+        >>> projection
+        <ProjectedCRS: 27700, OSGB 1936 / British National Grid>
 
     """
     url = '{prefix}{code}.gml?download'.format(prefix=EPSG_IO_URL, code=code)
