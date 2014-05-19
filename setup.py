@@ -27,6 +27,7 @@ setup(
                  'GNU Lesser General Public License v3 (LGPLv3)',
                  'Topic :: Scientific/Engineering :: GIS'],
     description='Easy access to the EPSG database via http://epsg.io/',
+    long_description=open('README.rst').read(),
 
     py_modules=['pyepsg'],
 )
