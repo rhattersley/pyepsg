@@ -198,6 +198,9 @@ class GeodeticCRS(CRS):
 
     """
 
+    def __repr__(self):
+        return '<GeodeticCRS: {self.id}, {self.name}>'.format(self=self)
+
 
 class ProjectedCRS(CRS):
     """
@@ -215,6 +218,9 @@ class ProjectedCRS(CRS):
         cs = self.element.find(GML_NS + 'cartesianCS')
         href = cs.attrib[XLINK_NS + 'href']
         return get(href)
+
+    def __repr__(self):
+        return '<ProjectedCRS: {self.id}, {self.name}>'.format(self=self)
 
 
 def get(code):
