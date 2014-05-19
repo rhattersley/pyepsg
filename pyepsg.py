@@ -83,7 +83,6 @@ class CartesianCS(EPSG):
         return '<CartesianCS: {name}>'.format(name=name)
 
 
-
 class CRS(EPSG):
     @property
     def id(self):
@@ -182,8 +181,8 @@ class CRS(EPSG):
         def extract_bound(i, tag):
             # TODO: Figure out if this is our problem or ET's.
             # `find` isn't returning anything :(
-            #ns = '{http://www.isotc211.org/2005/gmd}'
-            #bound = gml.find(ns + tag)
+            # ns = '{http://www.isotc211.org/2005/gmd}'
+            # bound = gml.find(ns + tag)
             bound = gml[1][0][1][0][i]
             return float(bound[0].text)
 
