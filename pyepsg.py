@@ -33,27 +33,35 @@ XLINK_NS = '{http://www.w3.org/1999/xlink}'
 
 
 class EPSG(object):
+    """Parent class of all objects returned by pyepsg."""
     def __init__(self, element):
         self.element = element
 
     @property
     def identifier(self):
+        """The official URN for this object."""
         return self.element.find(GML_NS + 'identifier').text
 
 
 class UOM(EPSG):
+    """A unit of measure."""
     @property
     def name(self):
+        """The human-readable name."""
         return self.element.find(GML_NS + 'name').text
 
 
 class Axis(EPSG):
+    """A single coordinate axis."""
+
     @property
     def direction(self):
+        """A description of the orientation of this axis."""
         return self.element.find(GML_NS + 'axisDirection').text
 
     @property
     def uom(self):
+        """The name of the unit of measure used on this axis."""
         uom = self.element.attrib['uom']
         return get(uom).name
 
@@ -62,18 +70,22 @@ class Axis(EPSG):
 
 
 class CartesianCS(EPSG):
+    """A 1-, 2-, or 3-dimensional cartesian coordinate system."""
     @property
     def axes(self):
+        """An ordered list of :class:`Axis` objects describing X and Y."""
         axes = self.element.findall(GML_NS + 'axis')
         return [Axis(axis.find(GML_NS + 'CoordinateSystemAxis')) for
                 axis in axes]
 
     @property
     def name(self):
+        """The human-readable name."""
         return self.element.find(GML_NS + 'name').text
 
     @property
     def remarks(self):
+        """Human-readable comments."""
         return self.element.find(GML_NS + 'remarks').text
 
     def __repr__(self):
@@ -84,18 +96,26 @@ class CartesianCS(EPSG):
 
 
 class CRS(EPSG):
+    """
+    Abstract parent class for :class:`GeodeticCRS` and :class:`ProjectedCRS`.
+
+    """
+
     @property
     def id(self):
+        """The EPSG code for this CRS."""
         id = self.element.attrib[GML_NS + 'id']
         code = id.split('-')[-1]
         return code
 
     @property
     def name(self):
+        """The human-readable name."""
         return self.element.find(GML_NS + 'name').text
 
     @property
     def scope(self):
+        """A human-readable description of the intended usage for this CRS."""
         return self.element.find(GML_NS + 'scope').text
 
     def as_esri_wkt(self):
@@ -105,7 +125,7 @@ class CRS(EPSG):
         For example::
 
             >>> print get(27700).as_esri_wkt() + '...'
-        PROJCS["OSGB_1936_British_National_Grid",GEOGCS["GCS_OSGB 19...
+            PROJCS["OSGB_1936_British_National_Grid",GEOGCS["GCS_OSGB 19...
 
         """
         url = '{prefix}{code}.esriwkt?download'.format(prefix=EPSG_IO_URL,
@@ -119,7 +139,7 @@ class CRS(EPSG):
         For example::
 
             >>> print get(27700).as_html() + '...'
-        <div class="syntax"><pre><span class="gh">PROJCS</span><span...
+            <div class="syntax"><pre><span class="gh">PROJCS</span><span...
 
         """
         url = '{prefix}{code}.html?download'.format(prefix=EPSG_IO_URL,
@@ -149,7 +169,7 @@ class CRS(EPSG):
         For example::
 
             >>> print get(27700).as_wkt() + '...'
-        PROJCS["OSGB 1936 / British National Grid",GEOGCS["OSGB 1936...
+            PROJCS["OSGB 1936 / British National Grid",GEOGCS["OSGB 1936...
 
         """
         url = '{prefix}{code}.wkt?download'.format(prefix=EPSG_IO_URL,
@@ -209,12 +229,14 @@ class ProjectedCRS(CRS):
     """
     @property
     def base_geodetic_crs(self):
+        """The :class:`GeodeticCRS` on which this projection is based."""
         base = self.element.find(GML_NS + 'baseGeodeticCRS')
         href = base.attrib[XLINK_NS + 'href']
         return get(href)
 
     @property
     def cartesian_cs(self):
+        """The :class:`CartesianCS` which describes the coordinate axes."""
         cs = self.element.find(GML_NS + 'cartesianCS')
         href = cs.attrib[XLINK_NS + 'href']
         return get(href)
@@ -231,13 +253,14 @@ def get(code):
         - :class:`GeodeticCRS`
         - :class:`ProjectedCRS`
         - :class:`CartesianCS`
-        - :class:`BaseUnit`
+        - :class:`UOM`
 
     For example::
 
-        >>> projection = get(27700)
-        >>> projection
+        >>> print get(27700)
         <ProjectedCRS: 27700, OSGB 1936 / British National Grid>
+        >>> print get('4400-cs')
+        <CartesianCS: Cartesian 2D CS. Axes: easting, northi..>
 
     """
     url = '{prefix}{code}.gml?download'.format(prefix=EPSG_IO_URL, code=code)

@@ -8,3 +8,4 @@ Welcome to pyepsg's documentation!
 
 .. automodule:: pyepsg
     :members:
+    :show-inheritance:
