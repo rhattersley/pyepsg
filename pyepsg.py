@@ -21,7 +21,6 @@ The entry point for this package is the :func:`get()` function.
 
 """
 import weakref
-
 import xml.etree.ElementTree as ET
 
 import requests
