@@ -272,7 +272,6 @@ def get(code):
         url = '{prefix}{code}.gml?download'.format(prefix=EPSG_IO_URL,
                                                    code=code)
         xml = requests.get(url).text
-        print 'request'
         root = ET.fromstring(xml)
         class_for_tag = {
             GML_NS + 'CartesianCS': CartesianCS,
