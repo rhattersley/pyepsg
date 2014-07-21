@@ -188,7 +188,7 @@ class CRS(EPSG):
 
         For example::
 
-            >>> get(21781).domain()
+            >>> get(21781).domain_of_validity()
             [5.97, 10.49, 45.83, 47.81]
 
 
