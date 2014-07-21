@@ -20,6 +20,8 @@ Provides simple access to http://epsg.io/.
 The entry point for this package is the :func:`get()` function.
 
 """
+from __future__ import print_function
+
 import weakref
 import xml.etree.ElementTree as ET
 
@@ -127,7 +129,7 @@ class CRS(EPSG):
 
         For example::
 
-            >>> print get(27700).as_esri_wkt() + '...'
+            >>> print(get(27700).as_esri_wkt() + '...')
             PROJCS["OSGB_1936_British_National_Grid",GEOGCS["GCS_OSGB 19...
 
         """
@@ -141,7 +143,7 @@ class CRS(EPSG):
 
         For example::
 
-            >>> print get(27700).as_html() + '...'
+            >>> print(get(27700).as_html() + '...')
             <div class="syntax"><pre><span class="gh">PROJCS</span><span...
 
         """
@@ -171,7 +173,7 @@ class CRS(EPSG):
 
         For example::
 
-            >>> print get(27700).as_wkt() + '...'
+            >>> print(get(27700).as_wkt() + '...')
             PROJCS["OSGB 1936 / British National Grid",GEOGCS["OSGB 1936...
 
         """
@@ -260,9 +262,9 @@ def get(code):
 
     For example::
 
-        >>> print get(27700)
+        >>> print(get(27700))
         <ProjectedCRS: 27700, OSGB 1936 / British National Grid>
-        >>> print get('4400-cs')
+        >>> print(get('4400-cs'))
         <CartesianCS: Cartesian 2D CS. Axes: easting, northi..>
 
     """

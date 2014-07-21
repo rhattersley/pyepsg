@@ -20,9 +20,9 @@ identified by EPSG code 21781, aka. "Swiss CH1903 / LV03"::
 Projected and geodetic coordinate systems can also be converted to various
 other forms::
 
-    >>> print projection.as_proj4()[:70] + '...'
+    >>> print(projection.as_proj4()[:70] + '...')
     +proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 ...
-    >>> print projection.as_wkt()[:70] + '...'
+    >>> print(projection.as_wkt()[:70] + '...')
     PROJCS["CH1903 / LV03",GEOGCS["CH1903",DATUM["CH1903",SPHEROID["Bessel...
 
 .. |build_status| image:: https://secure.travis-ci.org/rhattersley/pyepsg.png
