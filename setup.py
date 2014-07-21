@@ -25,6 +25,10 @@ setup(
     author_email='rhattersley@gmail.com',
     classifiers=['License :: OSI Approved :: '
                  'GNU Lesser General Public License v3 (LGPLv3)',
+                 'Programming Language :: Python :: 2',
+                 'Programming Language :: Python :: 2.7',
+                 'Programming Language :: Python :: 3',
+                 'Programming Language :: Python :: 3.3',
                  'Topic :: Scientific/Engineering :: GIS'],
     description='Easy access to the EPSG database via http://epsg.io/',
     long_description=open('README.rst').read(),
