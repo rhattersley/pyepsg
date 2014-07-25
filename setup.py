@@ -29,6 +29,7 @@ setup(
                  'Programming Language :: Python :: 2.7',
                  'Programming Language :: Python :: 3',
                  'Programming Language :: Python :: 3.3',
+                 'Programming Language :: Python :: 3.4',
                  'Topic :: Scientific/Engineering :: GIS'],
     description='Easy access to the EPSG database via http://epsg.io/',
     long_description=open('README.rst').read(),
