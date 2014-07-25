@@ -160,12 +160,12 @@ class CRS(EPSG):
             >>> print(get(21781).as_proj4())
             +proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 \
 +k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel \
-+towgs84=674.4,15.1,405.3,0,0,0,0 +units=m +no_defs \
++towgs84=674.4,15.1,405.3,0,0,0,0 +units=m +no_defs
 
         """
         url = '{prefix}{code}.proj4?download'.format(prefix=EPSG_IO_URL,
                                                      code=self.id)
-        return requests.get(url).text
+        return requests.get(url).text.strip()
 
     def as_wkt(self):
         """
