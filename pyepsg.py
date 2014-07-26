@@ -20,6 +20,8 @@ Provides simple access to http://epsg.io/.
 The entry point for this package is the :func:`get()` function.
 
 """
+from __future__ import print_function
+
 import weakref
 import xml.etree.ElementTree as ET
 
@@ -127,7 +129,7 @@ class CRS(EPSG):
 
         For example::
 
-            >>> print get(27700).as_esri_wkt() + '...'
+            >>> print(get(27700).as_esri_wkt())  # doctest: +ELLIPSIS
             PROJCS["OSGB_1936_British_National_Grid",GEOGCS["GCS_OSGB 19...
 
         """
@@ -141,7 +143,7 @@ class CRS(EPSG):
 
         For example::
 
-            >>> print get(27700).as_html() + '...'
+            >>> print(get(27700).as_html())  # doctest: +ELLIPSIS
             <div class="syntax"><pre><span class="gh">PROJCS</span><span...
 
         """
@@ -155,7 +157,7 @@ class CRS(EPSG):
 
         For example::
 
-            >>> get(21781).as_proj4()
+            >>> print(get(21781).as_proj4())
             +proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 \
 +k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel \
 +towgs84=674.4,15.1,405.3,0,0,0,0 +units=m +no_defs
@@ -163,7 +165,7 @@ class CRS(EPSG):
         """
         url = '{prefix}{code}.proj4?download'.format(prefix=EPSG_IO_URL,
                                                      code=self.id)
-        return requests.get(url).text
+        return requests.get(url).text.strip()
 
     def as_wkt(self):
         """
@@ -171,7 +173,7 @@ class CRS(EPSG):
 
         For example::
 
-            >>> print get(27700).as_wkt() + '...'
+            >>> print(get(27700).as_wkt())  # doctest: +ELLIPSIS
             PROJCS["OSGB 1936 / British National Grid",GEOGCS["OSGB 1936...
 
         """
@@ -186,7 +188,7 @@ class CRS(EPSG):
 
         For example::
 
-            >>> get(21781).domain()
+            >>> print(get(21781).domain_of_validity())
             [5.97, 10.49, 45.83, 47.81]
 
 
@@ -260,9 +262,9 @@ def get(code):
 
     For example::
 
-        >>> print get(27700)
+        >>> print(get(27700))
         <ProjectedCRS: 27700, OSGB 1936 / British National Grid>
-        >>> print get('4400-cs')
+        >>> print(get('4400-cs'))
         <CartesianCS: Cartesian 2D CS. Axes: easting, northi..>
 
     """
@@ -284,3 +286,8 @@ def get(code):
             raise ValueError('Unsupported code type: {}'.format(root.tag))
         _cache[code] = instance
     return instance
+
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
