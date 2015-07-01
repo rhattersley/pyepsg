@@ -4,6 +4,8 @@ python:
   - 3.3
   - 3.4
 
+sudo: false
+
 install:
   - pip install .
   - pip install -r requirements.txt
