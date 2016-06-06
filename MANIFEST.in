@@ -1,4 +1,3 @@
-pyepsg.py
-README.rst
-COPYING.LESSER
-COPYING
+include COPYING COPYING.LESSER README.rst
+include requirements.txt
+include docs/Makefile docs/make.bat docs/*.rst docs/*.py
