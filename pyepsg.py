@@ -22,6 +22,7 @@ The entry point for this package is the :func:`get()` function.
 """
 from __future__ import print_function
 
+import sys
 import weakref
 import xml.etree.ElementTree as ET
 
@@ -290,4 +291,5 @@ def get(code):
 
 if __name__ == '__main__':
     import doctest
-    doctest.testmod()
+    failure_count, test_count = doctest.testmod()
+    sys.exit(failure_count)
