@@ -189,7 +189,7 @@ class CRS(EPSG):
         For example::
 
             >>> print(get(21781).domain_of_validity())
-            [5.97, 10.49, 45.83, 47.81]
+            [5.96, 10.49, 45.82, 47.81]
 
 
         """
