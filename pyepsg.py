@@ -193,7 +193,6 @@ class CRS(EPSG):
 
 
         """
-        # TODO: Check for gmd:EX_GeographicBoundingBox and blow up otherwise.
         # TODO: Generalise interface to return a polygon? (Can we find
         # something that uses a polygon instead?)
         domain = self.element.find(GML_NS + 'domainOfValidity')
@@ -203,17 +202,17 @@ class CRS(EPSG):
         xml = requests.get(url).text
         gml = ET.fromstring(xml.encode('UTF-8'))
 
-        def extract_bound(i, tag):
-            # TODO: Figure out if this is our problem or ET's.
-            # `find` isn't returning anything :(
-            # ns = '{http://www.isotc211.org/2005/gmd}'
-            # bound = gml.find(ns + tag)
-            bound = gml[1][0][1][0][i]
-            return float(bound[0].text)
+        def extract_bound(tag):
+            ns = '{http://www.isotc211.org/2005/gmd}'
+            xpath = './/{ns}EX_GeographicBoundingBox/{ns}{tag}/'.format(
+                ns=ns,
+                tag=tag)
+            bound = gml.find(xpath)
+            return float(bound.text)
 
         tags = ('westBoundLongitude', 'eastBoundLongitude',
                 'southBoundLatitude', 'northBoundLatitude')
-        bounds = [extract_bound(i, tag) for i, tag in enumerate(tags)]
+        bounds = [extract_bound(tag) for tag in tags]
         return bounds
 
 
