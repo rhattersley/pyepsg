@@ -33,6 +33,6 @@ setup(
                  'Topic :: Scientific/Engineering :: GIS'],
     description='Easy access to the EPSG database via http://epsg.io/',
     long_description=open('README.rst').read(),
-
+    install_requires=['requests'],
     py_modules=['pyepsg'],
 )
