@@ -1,4 +1,4 @@
-# (C) British Crown Copyright 2014, Met Office
+# (C) British Crown Copyright 2014 - 2016, Met Office
 #
 # This file is part of pyepsg.
 #
@@ -201,8 +201,8 @@ class CRS(EPSG):
         domain_href = domain.attrib[XLINK_NS + 'href']
         url = '{prefix}{code}.gml?download'.format(prefix=EPSG_IO_URL,
                                                    code=domain_href)
-        xml = requests.get(url).text
-        gml = ET.fromstring(xml.encode('UTF-8'))
+        xml = requests.get(url).content
+        gml = ET.fromstring(xml)
 
         def extract_bound(i, tag):
             # TODO: Figure out if this is our problem or ET's.
@@ -273,7 +273,7 @@ def get(code):
     if instance is None:
         url = '{prefix}{code}.gml?download'.format(prefix=EPSG_IO_URL,
                                                    code=code)
-        xml = requests.get(url).text
+        xml = requests.get(url).content
         root = ET.fromstring(xml)
         class_for_tag = {
             GML_NS + 'CartesianCS': CartesianCS,
