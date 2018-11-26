@@ -1,4 +1,4 @@
-# (C) British Crown Copyright 2014 - 2016, Met Office
+# (C) British Crown Copyright 2014 - 2018, Met Office
 #
 # This file is part of pyepsg.
 #
@@ -103,7 +103,8 @@ class CartesianCS(EPSG):
 
 class CRS(EPSG):
     """
-    Abstract parent class for :class:`GeodeticCRS` and :class:`ProjectedCRS`.
+    Abstract parent class for :class:`GeodeticCRS`, :class:`ProjectedCRS`
+    and :class:`CompoundCRS`.
 
     """
 
@@ -250,6 +251,15 @@ class ProjectedCRS(CRS):
         return '<ProjectedCRS: {self.id}, {self.name}>'.format(self=self)
 
 
+class CompoundCRS(CRS):
+    """
+    Represents a single compound CRS.
+
+    """
+    def __repr__(self):
+        return '<CompoundCRS: {self.id}, {self.name}>'.format(self=self)
+
+
 def get(code):
     """
     Return an object that corresponds to the given EPSG code.
@@ -266,6 +276,8 @@ def get(code):
         <ProjectedCRS: 27700, OSGB 1936 / British National Grid>
         >>> print(get('4400-cs'))
         <CartesianCS: Cartesian 2D CS. Axes: easting, northi..>
+        >>> print(get(5973))
+        <CompoundCRS: 5973, ETRS89 / UTM zone 33 + NN2000 height>
 
     """
     instance = _cache.get(code)
@@ -278,6 +290,7 @@ def get(code):
             GML_NS + 'CartesianCS': CartesianCS,
             GML_NS + 'GeodeticCRS': GeodeticCRS,
             GML_NS + 'ProjectedCRS': ProjectedCRS,
+            GML_NS + 'CompoundCRS': CompoundCRS,
             GML_NS + 'BaseUnit': UOM,
         }
         if root.tag in class_for_tag:
