@@ -19,7 +19,7 @@ from setuptools import setup
 
 setup(
     name='pyepsg',
-    version='0.3.2',
+    version='0.4.0',
     url='https://github.com/rhattersley/pyepsg',
     author='Richard Hattersley',
     author_email='rhattersley@gmail.com',
