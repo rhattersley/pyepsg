@@ -205,9 +205,14 @@ class CRS(EPSG):
         # something that uses a polygon instead?)
         domain = self.element.find(GML_NS + 'domainOfValidity')
         domain_href = domain.attrib[XLINK_NS + 'href']
-        url = '{prefix}{code}.gml?download'.format(prefix=EPSG_IO_URL,
-                                                   code=domain_href)
-        xml = requests.get(url).content
+
+        xml = _cache_gml.get(domain_href)
+        if xml is None:
+            url = '{prefix}{code}.gml?download'.format(prefix=EPSG_IO_URL,
+                                                    code=domain_href)
+            xml = requests.get(url).content
+            _cache_gml[domain_href] = xml
+
         gml = ET.fromstring(xml)
 
         def extract_bound(tag):
