@@ -34,6 +34,8 @@ GML_NS = '{http://www.opengis.net/gml/3.2}'
 XLINK_NS = '{http://www.w3.org/1999/xlink}'
 
 
+_cache_html = {}
+_cache_wkt = {}
 _cache_gml = {}
 _cache_proj4 = {}
 
@@ -134,9 +136,13 @@ class CRS(EPSG):
             PROJCS["OSGB_1936_British_National_Grid",GEOGCS["GCS_OSGB 19...
 
         """
-        url = '{prefix}{code}.esriwkt?download'.format(prefix=EPSG_IO_URL,
-                                                       code=self.id)
-        return requests.get(url).text
+        result = _cache_wkt.get(self.id)
+        if result is None:
+            url = '{prefix}{code}.esriwkt?download'.format(prefix=EPSG_IO_URL,
+                                                        code=self.id)
+            result = requests.get(url).text
+            _cache_wkt[self.id] = result
+        return result
 
     def as_html(self):
         """
@@ -148,9 +154,13 @@ class CRS(EPSG):
             <div class="syntax"><pre><span class="gh">PROJCS</span><span...
 
         """
-        url = '{prefix}{code}.html?download'.format(prefix=EPSG_IO_URL,
-                                                    code=self.id)
-        return requests.get(url).text
+        result = _cache_html.get(self.id)
+        if result is None:
+            url = '{prefix}{code}.html?download'.format(prefix=EPSG_IO_URL,
+                                                        code=self.id)
+            result = requests.get(url).text
+            _cache_html[self.id] = result
+        return result
 
     def as_proj4(self):
         """
@@ -185,9 +195,13 @@ class CRS(EPSG):
             PROJCS["OSGB 1936 / British National Grid",GEOGCS["OSGB 1936...
 
         """
-        url = '{prefix}{code}.wkt?download'.format(prefix=EPSG_IO_URL,
-                                                   code=self.id)
-        return requests.get(url).text
+        result = _cache_wkt.get(self.id)
+        if result is None:
+            url = '{prefix}{code}.wkt?download'.format(prefix=EPSG_IO_URL,
+                                                    code=self.id)
+            result = requests.get(url).text
+            _cache_wkt[self.id] = result
+        return result
 
     def domain_of_validity(self):
         """
