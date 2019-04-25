@@ -23,7 +23,6 @@ The entry point for this package is the :func:`get()` function.
 from __future__ import print_function
 
 import sys
-import weakref
 import xml.etree.ElementTree as ET
 
 import requests
@@ -35,8 +34,8 @@ GML_NS = '{http://www.opengis.net/gml/3.2}'
 XLINK_NS = '{http://www.w3.org/1999/xlink}'
 
 
-_cache = weakref.WeakValueDictionary()
-
+_cache_gml = {}
+_cache_proj4 = {}
 
 class EPSG(object):
     """Parent class of all objects returned by pyepsg."""
@@ -165,9 +164,16 @@ class CRS(EPSG):
 +towgs84=674.4,15.1,405.3,0,0,0,0 +units=m +no_defs
 
         """
-        url = '{prefix}{code}.proj4?download'.format(prefix=EPSG_IO_URL,
+
+        proj4 = _cache_proj4.get(self.id)
+
+        if proj4 is None:
+            url = '{prefix}{code}.proj4?download'.format(prefix=EPSG_IO_URL,
                                                      code=self.id)
-        return requests.get(url).text.strip()
+            proj4 = requests.get(url).text.strip()
+            _cache_proj4[self.id] = proj4
+
+        return proj4
 
     def as_wkt(self):
         """
@@ -280,7 +286,7 @@ def get(code):
         <CompoundCRS: 5973, ETRS89 / UTM zone 33 + NN2000 height>
 
     """
-    instance = _cache.get(code)
+    instance = _cache_gml.get(code)
     if instance is None:
         url = '{prefix}{code}.gml?download'.format(prefix=EPSG_IO_URL,
                                                    code=code)
@@ -297,7 +303,7 @@ def get(code):
             instance = class_for_tag[root.tag](root)
         else:
             raise ValueError('Unsupported code type: {}'.format(root.tag))
-        _cache[code] = instance
+        _cache_gml[code] = instance
     return instance
 
 
