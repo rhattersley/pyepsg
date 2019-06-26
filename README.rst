@@ -4,7 +4,7 @@ pyepsg
 |build_status|
 
 
-A simple interface to http://epsg.io/
+A simple interface to https://epsg.io/
 
 For example, we can request the details for the projected coordinate system
 identified by EPSG code 21781, aka. "Swiss CH1903 / LV03"::
@@ -27,4 +27,4 @@ other forms::
 
 .. |build_status| image:: https://secure.travis-ci.org/rhattersley/pyepsg.png
    :alt: Build Status
-   :target: http://travis-ci.org/rhattersley/pyepsg
+   :target: https://travis-ci.org/rhattersley/pyepsg
