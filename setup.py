@@ -13,7 +13,7 @@
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with pyepsg.  If not, see <http://www.gnu.org/licenses/>.
+# along with pyepsg.  If not, see <https://www.gnu.org/licenses/>.
 
 from setuptools import setup
 
@@ -31,7 +31,7 @@ setup(
                  'Programming Language :: Python :: 3.3',
                  'Programming Language :: Python :: 3.4',
                  'Topic :: Scientific/Engineering :: GIS'],
-    description='Easy access to the EPSG database via http://epsg.io/',
+    description='Easy access to the EPSG database via https://epsg.io/',
     long_description=open('README.rst').read(),
     install_requires=['requests'],
     py_modules=['pyepsg'],

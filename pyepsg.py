@@ -13,9 +13,9 @@
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with pyepsg.  If not, see <http://www.gnu.org/licenses/>.
+# along with pyepsg.  If not, see <https://www.gnu.org/licenses/>.
 """
-Provides simple access to http://epsg.io/.
+Provides simple access to https://epsg.io/.
 
 The entry point for this package is the :func:`get()` function.
 
@@ -29,7 +29,7 @@ import xml.etree.ElementTree as ET
 import requests
 
 
-EPSG_IO_URL = 'http://epsg.io/'
+EPSG_IO_URL = 'https://epsg.io/'
 
 GML_NS = '{http://www.opengis.net/gml/3.2}'
 XLINK_NS = '{http://www.w3.org/1999/xlink}'
