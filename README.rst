@@ -28,3 +28,8 @@ other forms::
 .. |build_status| image:: https://secure.travis-ci.org/rhattersley/pyepsg.png
    :alt: Build Status
    :target: https://travis-ci.org/rhattersley/pyepsg
+
+### Tests
+
+* In order to run unit tests, run `docker build .`. 
+* No specific Python dependencies are required to be installed on your machine.
