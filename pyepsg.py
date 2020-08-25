@@ -35,9 +35,6 @@ EPSG_IO_URL = 'https://epsg.io/'
 GML_NS = '{http://www.opengis.net/gml/3.2}'
 XLINK_NS = '{http://www.w3.org/1999/xlink}'
 
-_cache = weakref.WeakValueDictionary()
-
-
 class EPSG(object):
     """Parent class of all objects returned by pyepsg."""
     def __init__(self, element):
