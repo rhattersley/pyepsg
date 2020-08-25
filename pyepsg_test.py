@@ -22,5 +22,13 @@ class TestAll(unittest.TestCase):
         #the projection from first and cache results must be the same
         self.assertEqual(proj1, proj2)
 
+        h1 = proj1.as_html
+        h2 = proj1.as_html
+        self.assertEqual(h1, h2)
+
+        h1 = proj1.as_html
+        h2 = proj1.as_html
+        self.assertEqual(h1, h2)
+
 if __name__ == '__main__':
     unittest.main()
