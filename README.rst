@@ -25,6 +25,6 @@ other forms::
     >>> print(projection.as_wkt()[:70] + '...')
     PROJCS["CH1903 / LV03",GEOGCS["CH1903",DATUM["CH1903",SPHEROID["Bessel...
 
-.. |build_status| image:: https://github.com/rhattersley/pyepsg/actions/workflows/test.yaml/badge.svg
+.. |build_status| image:: https://github.com/rhattersley/pyepsg/actions/workflows/test.yaml/badge.svg?branch=master
    :alt: Build Status
-   :target: https://github.com/rhattersley/pyepsg/actions/workflows/test.yaml
+   :target: https://github.com/rhattersley/pyepsg/actions/workflows/test.yaml?query=branch%3Amaster
