@@ -19,18 +19,18 @@ from setuptools import setup
 
 setup(
     name='pyepsg',
-    version='0.4.0',
+    version='0.5.0',
     url='https://github.com/rhattersley/pyepsg',
     author='Richard Hattersley',
     author_email='rhattersley@gmail.com',
     classifiers=['License :: OSI Approved :: '
                  'GNU Lesser General Public License v3 (LGPLv3)',
-                 'Programming Language :: Python :: 2',
-                 'Programming Language :: Python :: 2.7',
                  'Programming Language :: Python :: 3',
                  'Programming Language :: Python :: 3.5',
                  'Programming Language :: Python :: 3.6',
                  'Programming Language :: Python :: 3.7',
+                 'Programming Language :: Python :: 3.8',
+                 'Programming Language :: Python :: 3.9',
                  'Topic :: Scientific/Engineering :: GIS'],
     description='Easy access to the EPSG database via https://epsg.io/',
     long_description=open('README.rst').read(),
