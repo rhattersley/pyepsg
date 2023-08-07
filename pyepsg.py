@@ -135,7 +135,7 @@ class CRS(EPSG):
         """
         url = '{prefix}{code}.esriwkt?download'.format(prefix=EPSG_IO_URL,
                                                        code=self.id)
-        return requests.get(url).text
+        return requests.get(url, timeout=10).text
 
     @functools.lru_cache(maxsize=None)
     def as_html(self):
@@ -150,7 +150,7 @@ class CRS(EPSG):
         """
         url = '{prefix}{code}.html?download'.format(prefix=EPSG_IO_URL,
                                                     code=self.id)
-        return requests.get(url).text
+        return requests.get(url, timeout=10).text
 
     @functools.lru_cache(maxsize=None)
     def as_proj4(self):
@@ -167,7 +167,7 @@ class CRS(EPSG):
         """
         url = '{prefix}{code}.proj4?download'.format(prefix=EPSG_IO_URL,
                                                      code=self.id)
-        return requests.get(url).text.strip()
+        return requests.get(url, timeout=10).text.strip()
 
     @functools.lru_cache(maxsize=None)
     def as_wkt(self):
@@ -182,7 +182,7 @@ class CRS(EPSG):
         """
         url = '{prefix}{code}.wkt?download'.format(prefix=EPSG_IO_URL,
                                                    code=self.id)
-        return requests.get(url).text
+        return requests.get(url, timeout=10).text
 
     @functools.lru_cache(maxsize=None)
     def domain_of_validity(self):
@@ -203,7 +203,7 @@ class CRS(EPSG):
         domain_href = domain.attrib[XLINK_NS + 'href']
         url = '{prefix}{code}.gml?download'.format(prefix=EPSG_IO_URL,
                                                    code=domain_href)
-        xml = requests.get(url).content
+        xml = requests.get(url, timeout=10).content
         gml = ET.fromstring(xml)
 
         def extract_bound(tag):
@@ -284,7 +284,7 @@ def get(code):
     """
     url = '{prefix}{code}.gml?download'.format(prefix=EPSG_IO_URL,
                                                 code=code)
-    xml = requests.get(url).content
+    xml = requests.get(url, timeout=10).content
     root = ET.fromstring(xml)
     class_for_tag = {
         GML_NS + 'CartesianCS': CartesianCS,
